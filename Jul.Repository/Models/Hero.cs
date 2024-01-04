@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace Jul.Repository.Models
@@ -13,12 +14,16 @@ namespace Jul.Repository.Models
     /// EF => can be used with different approaches
     /// "Code-first", "Datamodeling", "DatabaseFirst"
     /// 1) public int Id { get; set; } this is the PK , HeroId, Heroid...
+    /// 
+    /// How do I avoid all the data to be send?
+    /// View Model or [JsonIgnore]
     /// </summary>
     public class Hero
     {
         [Key] // DataAnnotation / Attribute
         public int Id { get; set; } // PK className+Id 
         public string Name { get; set; } = string.Empty;
+        [JsonIgnore] // Decorator
         public string RealName { get; set; } = string.Empty;
         [Column(TypeName = "nvarchar(40)")]
         public string Place { get; set; } = string.Empty;

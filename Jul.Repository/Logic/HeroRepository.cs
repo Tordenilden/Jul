@@ -19,7 +19,7 @@ namespace Jul.Repository.Logic
             // connect to db "directly" and use the tables
             // SingleOrDefault(), FirstOrDefault() , Find(), Where(), Add()
             context.Hero.Add(entity);
-            //context.SaveChanges(); // SaveChangesAsync()
+            await context.SaveChangesAsync(); // SaveChangesAsync()
             return entity;
         }
 
@@ -28,7 +28,7 @@ namespace Jul.Repository.Logic
             var hero = await getById(entity.Id);
             if (hero != null) {
                 context.Hero.Remove(entity);
-               // context.SaveChanges();
+                context.SaveChangesAsync();
                 return true;
             }
             return false;          
@@ -40,8 +40,7 @@ namespace Jul.Repository.Logic
         }
 
         public async Task<Hero> getById(int id)
-        {
-
+        {          
             return await context.Hero.FirstOrDefaultAsync(h => h.Id == id);
 
 

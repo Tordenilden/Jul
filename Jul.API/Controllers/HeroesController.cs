@@ -8,11 +8,23 @@ using Microsoft.EntityFrameworkCore;
 using Jul.API;
 using Jul.Repository.Models;
 using Jul.Repository.Interfaces;
+using Newtonsoft.Json.Linq;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
+using System.Runtime.ConstrainedExecution;
 
 namespace Jul.API.Controllers
 {
+//    Controller - CRUD(Update arb selv)
+//Endpoint
+//    [DataAnnotation]
+//http statuscodes
+//200,400,500
+//Json – data object, array og normal , rigtig og forkert.
+//1-M LINQ ?
+//Hvis der er mere tid kig på angular til i morgen.
+
     [Route("api/[controller]")]
-    [ApiController]
+    [ApiController] //MVC - Modelstate
     public class HeroesController : ControllerBase
     {
         // DI Dependency Injection - Interface => det er jo ikke rigtigt!! NEJ MEN vi skal benytte Unit Test senere
@@ -76,16 +88,16 @@ namespace Jul.API.Controllers
         //    return NoContent();
         //}
 
-        //// POST: api/Heroes
-        //// To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        //[HttpPost]
-        //public async Task<ActionResult<Hero>> PostHero(Hero hero)
-        //{
-        //    _context.Hero.Add(hero);
-        //    await _context.SaveChangesAsync();
+        // POST: api/Heroes
+        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [HttpPost]
+        public async Task<ActionResult<Hero>> PostHero(Hero hero)
+        {
+            await _context.create(hero);
+            
 
-        //    return CreatedAtAction("GetHero", new { id = hero.Id }, hero);
-        //}
+            return CreatedAtAction("GetHero", new { id = hero.Id }, hero); // 201
+        }
 
         //// DELETE: api/Heroes/5
         //[HttpDelete("{id}")]
