@@ -40,7 +40,24 @@ namespace Jul.API.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Hero>>> GetHero()
         {
-            return await _context.getAll();
+            try
+            {
+                var heroes = await _context.getAll();
+                if (heroes == null)
+                {
+                    return Problem("You got a cookie"); // NotFound()
+                }
+                else if (heroes.Count == 0)
+                {
+                    return NoContent();
+                }
+                return Ok(heroes);
+            }
+            catch (Exception msg)
+            {
+                // ILogger =>
+                return Problem(msg.Message); // we can make our own
+            }           
         }
 
         // GET: api/Heroes/5
@@ -93,27 +110,30 @@ namespace Jul.API.Controllers
         [HttpPost]
         public async Task<ActionResult<Hero>> PostHero(Hero hero)
         {
-            await _context.create(hero);
-            
-
-            return CreatedAtAction("GetHero", new { id = hero.Id }, hero); // 201
+            try
+            {
+                if (hero == null) return BadRequest();
+                var temp = await _context.create(hero);
+                return Created("", temp);
+                //return CreatedAtAction("GetHero", new { id = hero.Id }, hero); // 201
+            }
+            catch (Exception msg)
+            {
+                return Problem(msg.Message);
+            }          
         }
 
         //// DELETE: api/Heroes/5
-        //[HttpDelete("{id}")]
-        //public async Task<IActionResult> DeleteHero(int id)
-        //{
-        //    var hero = await _context.Hero.FindAsync(id);
-        //    if (hero == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    _context.Hero.Remove(hero);
-        //    await _context.SaveChangesAsync();
-
-        //    return NoContent();
-        //}
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteHero(int id)
+        {
+            var hero = await _context.delete(id);
+            if (hero == false)
+            {
+                return NotFound();
+            }
+            return Ok();//man kan evt. returnere objektet, eller id hvis man skal bruge det.
+        }
 
         //private bool HeroExists(int id)
         //{

@@ -12,3 +12,9 @@ public void test(){
 	Assert   (see if the expected result is the same as the given argument)
 
 }
+
+
+CMD => test om det er installeret
+angular
+typescript
+node og npm

@@ -17,7 +17,7 @@ namespace Jul.Repository.Interfaces
         //CRUD
         public Task<Hero> create(Hero entity);
         public Task<Hero> update(Hero entity);
-        public Task<bool> delete(Hero entity);
+        public Task<bool> delete(int id);
         public Task<Hero> getById(int id);
         public Task<Hero> getByName(string name);
         public Task<List<Hero>> getAll();

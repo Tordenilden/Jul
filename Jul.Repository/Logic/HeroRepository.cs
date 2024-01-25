@@ -19,16 +19,17 @@ namespace Jul.Repository.Logic
             // connect to db "directly" and use the tables
             // SingleOrDefault(), FirstOrDefault() , Find(), Where(), Add()
             context.Hero.Add(entity);
+            //context.Hero.Add(new Hero { })
             await context.SaveChangesAsync(); // SaveChangesAsync()
             return entity;
         }
 
-        public async Task<bool> delete(Hero entity)
+        public async Task<bool> delete(int Id)
         {
-            var hero = await getById(entity.Id);
+            var hero = await getById(Id);
             if (hero != null) {
-                context.Hero.Remove(entity);
-                context.SaveChangesAsync();
+                context.Hero.Remove(hero);
+                await context.SaveChangesAsync();
                 return true;
             }
             return false;          
@@ -42,25 +43,10 @@ namespace Jul.Repository.Logic
         public async Task<Hero> getById(int id)
         {          
             return await context.Hero.FirstOrDefaultAsync(h => h.Id == id);
-
-
-
-            //List<Hero> list = new List<Hero>
-            //{new Hero{Id=2,Name="Bo",RealName="bandit",Place="dk",DebutYear= DateTime.Now } };
-
-            //foreach (var hero in list)
-            //{
-            //    if (hero.Id == 2) { We have vacation for a week};
-            //}
-
-            // DO we have to check if its null? - ternary eller normalt
-
-            //context.Hero.Where((hero) => hero.Id == id).ToList();
-            //context.Hero.Where((hero) => hero.Id != id).ToList();
-            //context.Hero.Where((hero) => hero.Id < 2).ToList();
-            //context.Hero.Where((hero) => hero.Name != "Ulla").ToList();
         }
         #endregion impl
+
+#region not impl
         public async Task<Hero> getByName(string name)
         {
             throw new NotImplementedException();
@@ -70,5 +56,24 @@ namespace Jul.Repository.Logic
         {
             throw new NotImplementedException();
         }
+
+#endregion not impl
     }
+
+
+
+    //List<Hero> list = new List<Hero>
+    //{new Hero{Id=2,Name="Bo",RealName="bandit",Place="dk",DebutYear= DateTime.Now } };
+
+    //foreach (var hero in list)
+    //{
+    //    if (hero.Id == 2) { We have vacation for a week};
+    //}
+
+    // DO we have to check if its null? - ternary eller normalt
+
+    //context.Hero.Where((hero) => hero.Id == id).ToList();
+    //context.Hero.Where((hero) => hero.Id != id).ToList();
+    //context.Hero.Where((hero) => hero.Id < 2).ToList();
+    //context.Hero.Where((hero) => hero.Name != "Ulla").ToList();
 }

@@ -22,7 +22,8 @@ namespace Jul.Repository.Models
     {
         [Key] // DataAnnotation / Attribute
         public int Id { get; set; } // PK className+Id 
-        public string Name { get; set; } = string.Empty;
+        [Required]
+        public string Name { get; set; } = "";
         [JsonIgnore] // Decorator
         public string RealName { get; set; } = string.Empty;
         [Column(TypeName = "nvarchar(40)")]

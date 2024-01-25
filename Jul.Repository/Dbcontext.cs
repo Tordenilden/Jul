@@ -25,7 +25,8 @@ namespace Jul.Repository
         }
         //tables in my DB
         public DbSet<Hero> Hero {  get; set; }
+        public DbSet<Team> Team { get; set; }
         //public DbSet<ModelName> Hero { get; set; }
-        
+
     }
 }
