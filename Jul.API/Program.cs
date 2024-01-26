@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
+//HeroControllerTest gg = new HeroControllerTest();
 //Hero h = new Hero(); // concrete - always getting the same blueprint
 //h.hat();
 // Add services to the container.

@@ -38,7 +38,7 @@ namespace Jul.API.Controllers
 
         // GET: api/Heroes
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Hero>>> GetHero()
+        public async Task<ActionResult> GetHero()
         {
             try
             {
@@ -64,14 +64,21 @@ namespace Jul.API.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Hero>> GetHero(int id)
         {
-            var hero = await _context.getById(id);
-
-            if (hero == null)
+            try
             {
-                return NotFound();
+                var hero = await _context.getById(id);
+                if (hero == null)
+                {
+                    return NotFound();
+                }
+                return Ok(hero);
             }
-
-            return Ok(hero);
+            catch (Exception ex)
+            {
+                return Problem(ex.Message);
+                //throw;
+            }
+           
         }
 
         //// PUT: api/Heroes/5
