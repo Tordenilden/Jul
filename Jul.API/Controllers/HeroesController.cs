@@ -11,6 +11,7 @@ using Jul.Repository.Interfaces;
 using Newtonsoft.Json.Linq;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 using System.Runtime.ConstrainedExecution;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Jul.API.Controllers
 {
@@ -29,7 +30,7 @@ namespace Jul.API.Controllers
     {
         // DI Dependency Injection - Interface => det er jo ikke rigtigt!! NEJ MEN vi skal benytte Unit Test senere
 
-        private readonly IHeroRepository _context;
+        public IHeroRepository _context;
 
         public HeroesController(IHeroRepository context)
         {
@@ -81,41 +82,30 @@ namespace Jul.API.Controllers
            
         }
 
-        //// PUT: api/Heroes/5
-        //// To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        //[HttpPut("{id}")]
-        //public async Task<IActionResult> PutHero(int id, Hero hero)
-        //{
-        //    if (id != hero.Id)
-        //    {
-        //        return BadRequest();
-        //    }
-
-        //    _context.Entry(hero).State = EntityState.Modified;
-
-        //    try
-        //    {
-        //        await _context.SaveChangesAsync();
-        //    }
-        //    catch (DbUpdateConcurrencyException)
-        //    {
-        //        if (!HeroExists(id))
-        //        {
-        //            return NotFound();
-        //        }
-        //        else
-        //        {
-        //            throw;
-        //        }
-        //    }
-
-        //    return NoContent();
-        //}
+        // PUT: api/Heroes/5
+        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [HttpPut("{id}")]
+        public async Task<IActionResult> PutHero(int id, Hero hero)
+        {
+            if (id != hero.Id)
+            {
+                return BadRequest();
+            }
+            try
+            {
+                await _context.update(hero); // hvad nu hvis hero ikke findes nede i databasen? kan man så update??
+                return Ok(hero);
+            }
+            catch (DbUpdateConcurrencyException ex)
+            {
+                return Problem(ex.Message);
+            }
+        }
 
         // POST: api/Heroes
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Hero>> PostHero(Hero hero)
+        public async Task<ActionResult> PostHero(Hero hero)
         {
             try
             {

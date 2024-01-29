@@ -87,9 +87,9 @@ namespace Jul.UnitTest.ControllerTest
         }
 
         #endregion get
-
+        #region Delete
         [Fact]
-        public async Task DeleteFoundData()
+        public async Task Delete_FoundData()
         {
             List<Hero> heroes = new List<Hero>()
             {
@@ -116,6 +116,80 @@ namespace Jul.UnitTest.ControllerTest
         }
 
         // TODO - Throw...
+        #endregion Delete
+        #region    Update
+        [Fact]
+        public async Task UpdateHero_OK()
+        {
+            List<Hero> heroes = new List<Hero>()
+            {
+                new Hero { Id = 1, DebutYear= DateTime.Now, Name= "Ulla", RealName="Ulla Ulla", Place="DK" },
+                new Hero { Id = 2, DebutYear = DateTime.Now, Name = "Hansi", RealName = "Ulla Ulla", Place = "UK" }
+            };
+            store.setData(heroes);
+            Hero hero = new Hero { Id = 1, DebutYear = DateTime.Now, Name = "Anna", RealName = "Anna the great", Place = "UK" };
+
+            var result = await controller.PutHero(1,hero);
+            //Assert
+            var statusResult = (IStatusCodeActionResult)result;
+            Assert.Equal(200, statusResult.StatusCode);
+            //Assert.Equal(2, store.Count()); // så skal vi kode Count()
+        }
+        [Fact]
+        public async Task UpdateHero_ShouldReturn404()
+        {
+            //List<Hero> heroes = new List<Hero>()
+            //{
+            //    new Hero { Id = 1, DebutYear= DateTime.Now, Name= "Ulla", RealName="Ulla Ulla", Place="DK" },
+            //    new Hero { Id = 2, DebutYear = DateTime.Now, Name = "Hansi", RealName = "Ulla Ulla", Place = "UK" }
+            //};
+            //store.setData(heroes);
+            Hero hero = new Hero { Id = 1, DebutYear = DateTime.Now, Name = "Anna", RealName = "Anna the great", Place = "UK" };
+
+            var result = await controller.PutHero(2,hero);
+            //Assert
+            var statusResult = (IStatusCodeActionResult)result;
+            Assert.Equal(400, statusResult.StatusCode);
+        }
+
+
+        #endregion Update
+        #region    Create
+        [Fact]
+        public async Task CreateHero_ObjectExists()
+        {
+            var hero = new Hero { Id = 5, Name = "Hansi", RealName = "Gorm den smarte", DebutYear = DateTime.Now, Place = "The sky" };
+
+            var result = await controller.PostHero(hero);
+
+            var statusResult = (IStatusCodeActionResult)result;
+            Assert.Equal(201, statusResult.StatusCode);
+        }        
+        
+        [Fact]
+        public async Task CreateHero_IfNoDataExists()
+        {
+            Hero hero = null;
+
+            var result = await controller.PostHero(hero);
+
+            var statusResult = (IStatusCodeActionResult)result;
+            Assert.Equal(400, statusResult.StatusCode);
+        }
+
+        [Fact]
+        public async Task CreateHero_ExceptionIsThrown()
+        {
+            // kill db!!
+            Hero hero = null;
+
+            var result = await controller.PostHero(hero);
+
+            var statusResult = (IStatusCodeActionResult)result;
+            Assert.Equal(500, statusResult.StatusCode);
+        }
+
+        #endregion Create
     }
 
     /// <summary>
@@ -136,9 +210,21 @@ namespace Jul.UnitTest.ControllerTest
 
 
 
-        public Task<Hero> create(Hero entity)
+        public async Task<Hero> create(Hero entity)
         {
-            throw new NotImplementedException();
+            return await Task.FromResult<Hero>(entity);
+        }
+        public async Task<Hero> update(Hero entity)
+        {
+            // EF is tracking an object that it can modify
+            var objToUpdate = heroes.FirstOrDefault(h=>h.Id == entity.Id);
+            objToUpdate.Name = entity.Name;
+            objToUpdate.RealName = entity.RealName;
+            objToUpdate.DebutYear = entity.DebutYear;
+            objToUpdate.Place = entity.Place;
+            // AutoMapper <obj1, obj2>
+            return await Task.FromResult<Hero>(entity);
+
         }
 
         public async Task<bool> delete(int id) //2
@@ -148,15 +234,6 @@ namespace Jul.UnitTest.ControllerTest
             //return await Task.FromResult(if (found != null) { return true; } else return false);
             return await Task.FromResult(found != null ?true:false);
         }
-
-
-
-
-
-
-
-
-
 
         // right now its repeting code. Iam so sry
         public async Task<List<Hero>> getAll()
@@ -179,10 +256,7 @@ namespace Jul.UnitTest.ControllerTest
             throw new NotImplementedException();
         }
 
-        public Task<Hero> update(Hero entity)
-        {
-            throw new NotImplementedException();
-        }
+
     }
 }
 // Assert.Equal(HttpStatusCode.OK , (HttpStatusCode)result.StatusCode);

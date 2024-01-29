@@ -54,7 +54,10 @@ namespace Jul.Repository.Logic
 
         public async Task<Hero> update(Hero entity)
         {
-            throw new NotImplementedException();
+            // findes obj?
+            context.Update(entity);
+            await context.SaveChangesAsync();
+            return entity;
         }
 
 #endregion not impl
